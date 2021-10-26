@@ -79,26 +79,57 @@ const Table = (props) => {
     setResults(res)
   }
     
+  useEffect(async() => {
+    const d = await axios(url);
+    console.log('d', d)
+    setResults(d)
+  }, [])
   // getData()
   
   useEffect(() => {
     // Update the document title using   the browser API
     console.log('hi');
-    getData();
-  }, []);
-  
-  // console.log('RESULTS', results.data.message)
+    // getData();
+  });
 
-  // console.log('res', results.data.message)
-  // let messages;
-  // if (results){
-  //   const { message } = results.data; 
-  //   messages = message;
+  let a
 
-  // }
+  if (results){
+    const {message} = results.data
+    a = message
+  }
 
-  const{message} = results.data
-  // console.log('me', message)
+  const dataFetch = () => {
+    return a.map((item) => (
+      <>
+        <ItemWrapper>
+          <Item>{item.ingredient}</Item>
+          <Availability>{item.qtywasted}</Availability>
+          <div
+            onClick={() => {
+              setTick(!tick);
+            }}
+          >
+            <Plus
+              onClick={() => {
+                props.onClickItem(item.ingredient);
+                // setTick(!tick);
+              }}
+            >
+              {handleTick()}
+            </Plus>
+          </div>
+        </ItemWrapper>
+      </>
+    ));
+
+  }
+
+  const returnResults = () => {
+    if (a) return dataFetch()
+  }
+
+  // console.log('a', a.map(t => t.ingredient))
   return (
     <>
       <ButtonWrapper onClick={() => routeChange()}>Reserve</ButtonWrapper>
@@ -110,11 +141,11 @@ const Table = (props) => {
           <div className="Available-header"> Available</div>
         </Wrapper>
         <hr />
-        {message.map((item) => (
+        {/* {data.map((item) => (
           <>
             <ItemWrapper>
-              <Item>{item.ingredient}</Item>
-              <Availability>{item.qtywasted*100}</Availability>
+              <Item>{item.item}</Item>
+              <Availability>{item.available}</Availability>
               <div onClick={() => {
                 setTick(!tick);
                 
@@ -130,7 +161,8 @@ const Table = (props) => {
               </div>
             </ItemWrapper>
           </>
-        ))}
+        ))} */}
+        {returnResults()}
       </TableWrapper>
     </>
   );
